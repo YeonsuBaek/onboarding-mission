@@ -1,18 +1,18 @@
 function problem1(pobi, crong) {
   const pobiScore = getScore(pobi);
   const crongScore = getScore(crong);
-  const scoresToCompare = [pobiScore, crongScore];
   const pobiError = isError(pobi);
   const crongError = isError(crong);
-  const result = getResult(scoresToCompare, pobiError, crongError);
+  const result = getResult({ pobi: pobiScore, crong: crongScore }, pobiError, crongError);
 
   return result;
 }
 
 function getScore(person) {
-  const leftValues = calculatePageNumber(person[0]);
+  const [left, right] = person;
+  const leftValues = calculatePageNumber(left);
   const leftScore = compareNumber(leftValues);
-  const rightValues = calculatePageNumber(person[1]);
+  const rightValues = calculatePageNumber(right);
   const rightScore = compareNumber(rightValues);
 
   return compareNumber({ first: leftScore, second: rightScore });
@@ -36,12 +36,8 @@ function calculatePageNumber(page) {
   };
 }
 
-function compareNumber(values) {
-  if (values.first >= values.second) {
-    return values.first;
-  }
-
-  return values.second;
+function compareNumber({ first, second }) {
+  return first >= second ? first : second
 }
 
 function isError(person) {
@@ -70,41 +66,26 @@ function isError(person) {
 }
 
 function isPageError(person) {
+  const [left, right] = person;
   const FIRST_PAGE = 1;
   const LAST_PAGE = 400;
 
-  if (person[0] <= FIRST_PAGE || person[1] >= LAST_PAGE) {
-    return "페이지는 1쪽 이상 400쪽 이하 입니다.";
-  }
-
-  return "Not Error";
+  return left <= FIRST_PAGE || right >= LAST_PAGE ? "페이지는 1쪽 이상 400쪽 이하 입니다." : "Not Error";
 }
 
 function countNumberOfPages(person) {
-  if (person.length !== 2) {
-    return "페이지 두 쪽을 선택해야 합니다.";
-  }
-
-  return "Not Error";
+  return person.length !== 2 ? "페이지 두 쪽을 선택해야 합니다." : "Not Error";
 }
 
 function isLeftPageNumber(person) {
-  if (person[0] % 2 == 0) {
-    return "왼쪽 페이지는 홀수이어야 합니다.";
-  }
-
-  return "Not Error";
+  return left % 2 == 0 ? "왼쪽 페이지는 홀수이어야 합니다." : "Not Error";
 }
 
 function orderPageNumber(person) {
-  if (person[1] !== person[0] + 1) {
-    return "오른쪽 페이지는 왼쪽 페이지의 다음 숫자이어야 합니다.";
-  }
-
-  return "Not Error";
+  return right !== left + 1 ? "오른쪽 페이지는 왼쪽 페이지의 다음 숫자이어야 합니다." : "Not Error";
 }
 
-function getResult(score, pobi, crong) {
+function getResult({ pobi, crong }, pobi, crong) {
   const POBI_WiN = 1;
   const CRONG_WIN = 2;
   const TWO_THE_SAME = 0;
@@ -114,13 +95,13 @@ function getResult(score, pobi, crong) {
     return EXCEPTION;
   }
 
-  if (score[0] > score[1]) {
+  if (pobi > crong) {
     return POBI_WiN;
   }
-  if (score[0] === score[1]) {
+  if (pobi === crong) {
     return TWO_THE_SAME;
   }
-  if (score[0] < score[1]) {
+  if (pobi < crong) {
     return CRONG_WIN;
   }
 }
