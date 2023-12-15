@@ -1,36 +1,20 @@
 function problem2(cryptogram) {
-  const checkedErrors = checkErrors(cryptogram);
-
-  if (checkedErrors === "Not Error") {
-    const result = removeDuplicates(cryptogram);
-
-    return result;
-  }
-
-  return checkedErrors;
+  const isError = checkError(cryptogram);
+  return isError ? -1 : removeDuplicates(cryptogram);
 }
 
-function checkErrors(word) {
-  const MINIMUM_LENGTH = 1;
-  const MAXIMUM_LENGTH = 1000;
-  const MINIMUM_ALPHABET = "a";
-  const MAXIMUM_ALPHABET = "z";
+function checkError(word) {
+  const LENGTH = { MIN: 1, MAX: 1000 };
+  const ALPHABET = { MIN: "a", MAX: "z" };
   const wordLength = word.length;
 
-  if (wordLength < MINIMUM_LENGTH || wordLength > MAXIMUM_LENGTH) {
-    return "문자열의 길이는 최소 1, 최대 1000입니다.";
+  if (wordLength < LENGTH.MIN || wordLength > LENGTH.MAX) {
+    return true;
   }
 
-  for (let wordIndex = 0; wordIndex < wordLength; wordIndex++) {
-    if (
-      word[wordIndex] < MINIMUM_ALPHABET ||
-      word[wordIndex] > MAXIMUM_ALPHABET
-    ) {
-      return "문자열은 소문자 알파벳으로만 이루어져야 합니다.";
-    }
+  return word.some((alphabet) =>
+    alphabet >= ALPHABET.MIN && alphabet <= ALPHABET.MAX)
   }
-
-  return "Not Error";
 }
 
 function removeDuplicates(word) {
@@ -56,10 +40,6 @@ function removeDuplicates(word) {
     removedResult += word[wordIndex];
   }
 
-  if (changedHistory === false) {
-    return removedResult;
-  }
-
-  return removeDuplicates(removedResult);
+  return changedHistory ? removeDuplicates(removedResult) : removedResult;
 }
 module.exports = problem2;
