@@ -1,11 +1,10 @@
 function problem1(pobi, crong) {
+  if (isError(pobi) || isError(crong)) {
+    return -1;
+  }
   const pobiScore = getScore(pobi);
   const crongScore = getScore(crong);
-  const pobiError = isError(pobi);
-  const crongError = isError(crong);
-  const result = getResult({ pobi: pobiScore, crong: crongScore }, pobiError, crongError);
-
-  return result;
+  return getResult({ pobi: pobiScore, crong: crongScore });
 }
 
 function getScore(person) {
@@ -42,27 +41,11 @@ function compareNumber({ first, second }) {
 
 function isError(person) {
   const pageError = isPageError(person);
-  const numberOfPages = countNumberOfPages(person);
-  const leftPage = isLeftPageNumber(person);
-  const pageOrdered = orderPageNumber(person);
+  const numberOfPagesError = isNumberOfPagesError(person);
+  const leftPageError = isLeftPageError(person);
+  const pageOrderedError = isPageOrderedError(person);
 
-  if (pageError !== "Not Error") {
-    return pageError;
-  }
-
-  if (numberOfPages !== "Not Error") {
-    return numberOfPages;
-  }
-
-  if (leftPage !== "Not Error") {
-    return leftPage;
-  }
-
-  if (pageOrdered !== "Not Error") {
-    return pageOrdered;
-  }
-
-  return "Not Error";
+  return pageError || numberOfPagesError || leftPageError || isPageOrderedError;
 }
 
 function isPageError(person) {
@@ -70,30 +53,26 @@ function isPageError(person) {
   const FIRST_PAGE = 1;
   const LAST_PAGE = 400;
 
-  return left <= FIRST_PAGE || right >= LAST_PAGE ? "페이지는 1쪽 이상 400쪽 이하 입니다." : "Not Error";
+  return left <= FIRST_PAGE || right >= LAST_PAGE;
 }
 
-function countNumberOfPages(person) {
-  return person.length !== 2 ? "페이지 두 쪽을 선택해야 합니다." : "Not Error";
+function isNumberOfPagesError(person) {
+  const NUMBER_OF_PAGES = 2
+  return person.length !== NUMBER_OF_PAGES;
 }
 
-function isLeftPageNumber(person) {
-  return left % 2 == 0 ? "왼쪽 페이지는 홀수이어야 합니다." : "Not Error";
+function isLeftPageError(person) {
+  return left % 2 == 0;
 }
 
-function orderPageNumber(person) {
-  return right !== left + 1 ? "오른쪽 페이지는 왼쪽 페이지의 다음 숫자이어야 합니다." : "Not Error";
+function isPageOrderedError(person) {
+  return right !== left + 1;
 }
 
-function getResult({ pobi, crong }, pobi, crong) {
+function getResult({ pobi, crong }) {
   const POBI_WiN = 1;
   const CRONG_WIN = 2;
   const TWO_THE_SAME = 0;
-  const EXCEPTION = -1;
-
-  if (pobi !== "Not Error" || crong !== "Not Error") {
-    return EXCEPTION;
-  }
 
   if (pobi > crong) {
     return POBI_WiN;
