@@ -36,7 +36,7 @@ function calculatePageNumber(page) {
 }
 
 function compareNumber({ first, second }) {
-  return first >= second ? first : second
+  return first >= second ? first : second;
 }
 
 function isError(person) {
@@ -45,7 +45,7 @@ function isError(person) {
   const leftPageError = isLeftPageError(person);
   const pageOrderedError = isPageOrderedError(person);
 
-  return pageError || numberOfPagesError || leftPageError || isPageOrderedError;
+  return pageError || numberOfPagesError || leftPageError || pageOrderedError;
 }
 
 function isPageError(person) {
@@ -57,15 +57,17 @@ function isPageError(person) {
 }
 
 function isNumberOfPagesError(person) {
-  const NUMBER_OF_PAGES = 2
+  const NUMBER_OF_PAGES = 2;
   return person.length !== NUMBER_OF_PAGES;
 }
 
 function isLeftPageError(person) {
+  const left = person[0];
   return left % 2 == 0;
 }
 
 function isPageOrderedError(person) {
+  const [left, right] = person;
   return right !== left + 1;
 }
 
