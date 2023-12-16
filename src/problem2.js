@@ -4,23 +4,23 @@ function problem2(cryptogram) {
 }
 
 function checkError(word) {
+  return !isValidLength(word.length) || !isValidAlphabet;
+}
+
+function isValidLength(length) {
   const LENGTH = { MIN: 1, MAX: 1000 };
-  const ALPHABET = { MIN: "a", MAX: "z" };
-  const wordLength = word.length;
+  return length >= LENGTH.MIN || length <= LENGTH.MAX;
+}
 
-  if (wordLength < LENGTH.MIN || wordLength > LENGTH.MAX) {
-    return true;
-  }
-
-  return word.some((alphabet) =>
-    alphabet >= ALPHABET.MIN && alphabet <= ALPHABET.MAX)
-  }
+function isValidAlphabet(word) {
+  const regex = /^[a-z]+$/;
+  return regex.test(word);
 }
 
 function removeDuplicates(word) {
   const wordLength = word.length;
-  let removedResult = "";
-  let duplicateAlphabet = "";
+  let removedResult = '';
+  let duplicateAlphabet = '';
   let changedHistory = false;
 
   for (let wordIndex = 0; wordIndex < wordLength; wordIndex++) {
@@ -32,7 +32,7 @@ function removeDuplicates(word) {
     }
 
     if (duplicateAlphabet[wordIndex] === duplicateAlphabet) {
-      duplicateAlphabet = "";
+      duplicateAlphabet = '';
       wordIndex++;
       continue;
     }
