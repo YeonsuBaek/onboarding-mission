@@ -18,28 +18,17 @@ function isValidAlphabet(word) {
 }
 
 function removeDuplicates(word) {
-  const wordLength = word.length;
   let removedResult = '';
-  let duplicateAlphabet = '';
-  let changedHistory = false;
+  let lastChar = '';
 
-  for (let wordIndex = 0; wordIndex < wordLength; wordIndex++) {
-    if (word[wordIndex] === word[wordIndex + 1]) {
-      changedHistory = true;
-      duplicateAlphabet = word[wordIndex];
-      wordIndex++;
-      continue;
+  for (let char of word) {
+    if (char !== lastChar) {
+      removedResult += char;
+      lastChar = char;
     }
-
-    if (duplicateAlphabet[wordIndex] === duplicateAlphabet) {
-      duplicateAlphabet = '';
-      wordIndex++;
-      continue;
-    }
-
-    removedResult += word[wordIndex];
   }
 
-  return changedHistory ? removeDuplicates(removedResult) : removedResult;
+  return removedResult;
 }
+
 module.exports = problem2;
