@@ -1,117 +1,88 @@
 function problem6(forms) {
-  const checkedErrors = checkErrors(forms);
-
-  if (checkedErrors === "Not Error") {
-    const cutNames = cutNamesIntoTwoLetters(forms);
-    const emailListOfDuplicatedCrews = getEmailOfDuplicatedCrews(
-      forms,
-      cutNames
-    );
-    const result = arrangeInAscendingOrder(emailListOfDuplicatedCrews);
-
-    return result;
-  }
-
-  return checkedErrors;
+  const isError = checkErrors(forms);
+  return isError ? -1 : getResult(forms);
 }
 
 function checkErrors(crews) {
-  const numberOfCheckedCrews = countCrews(crews);
-  const checkedDomain = checkDomain(crews);
-  const checkedKoreanName = checkKoreanName(crews);
-  const checkedNameLength = checkNameLength(crews);
+  const isValidCount = checkValidCount(crews);
+  const isValidDomain = checkValidDomain(crews);
+  const isKoreanName = checkKoreanName(crews);
+  const isValidLength = checkValidLength(crews);
 
-  if (numberOfCheckedCrews !== "Not Error") {
-    return numberOfCheckedCrews;
-  }
-
-  if (checkedDomain !== "Not Error") {
-    return checkedDomain;
-  }
-
-  if (checkedKoreanName !== "Not Error") {
-    return checkedKoreanName;
-  }
-
-  if (checkedNameLength !== "Not Error") {
-    return checkedNameLength;
-  }
-
-  return "Not Error";
+  return !(isValidCount && isValidDomain && isKoreanName && isValidLength);
 }
 
-function countCrews(crews) {
-  const MINIMUM_NUMBER = 1;
-  const MAXIMUM_NUMBER = 10000;
-  const theNumberOfCrews = crews.length;
+function checkValidCount(crews) {
+  const NUMBER = { MIN: 1, MAX: 10000 }
+  const crewsCount = crews.length;
 
-  if (theNumberOfCrews < MINIMUM_NUMBER || theNumberOfCrews > MAXIMUM_NUMBER) {
-    return "크루는 1명 이상 10,000명 이하이어야 합니다.";
-  }
-
-  return "Not Error";
+  return crewsCount >= NUMBER.MIN && crewsCount <= NUMBER.MAX;
 }
 
-function checkDomain(crews) {
-  const theNumberOfCrews = crews.length;
+function checkValidDomain(crews) {
+  const crewsCount = crews.length;
 
-  for (let crewIndex = 0; crewIndex < theNumberOfCrews; crewIndex++) {
+  for (let i = 0; i < crewsCount; i++) {
     const EMAIL_DOMAIN = "email.com";
-    const email = crews[crewIndex][0];
+    const email = crews[i][0];
 
-    if (email.includes(EMAIL_DOMAIN) === false) {
-      return "도메인은 email.com만 이용 가능합니다.";
+    if (!email.includes(EMAIL_DOMAIN)) {
+      return false;
     }
   }
 
-  return "Not Error";
+  return true;
 }
 
 function checkKoreanName(crews) {
-  const english = /[a-zA-Z]/;
-  const number = /[0-9]/;
-  const specialText = /[~!@#$%^&*()_+|<>?:{}]/;
-  const theNumberOfCrews = crews.length;
+  const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+  const crewsCount = crews.length;
 
-  for (let crewIndex = 0; crewIndex < theNumberOfCrews; crewIndex++) {
-    const name = crews[crewIndex][1];
+  for (let i = 0; i < crewsCount; i++) {
+    const name = crews[i][1];
 
-    if (
-      english.test(name) === true ||
-      number.test(name) === true ||
-      specialText.test(name) === true
-    ) {
-      return "닉네임은 한글만 사용할 수 있습니다.";
+    if (!korean.test(name) {
+      return false;
     }
   }
 
-  return "Not Error";
+  return true;
 }
 
-function checkNameLength(crews) {
-  const theNumberOfCrews = crews.length;
+function checkValidLength(crews) {
+  const NAME = { MIN: 1, MAX: 19 }
+  const crewsCount = crews.length;
 
-  for (let crewIndex = 0; crewIndex < theNumberOfCrews; crewIndex++) {
-    const MINIMUN_NAME = 1;
-    const MAXIMUM_NAME = 19;
-    const name = crews[crewIndex][1];
+  for (let i = 0; i < crewsCount; i++) {
+    const name = crews[i][1];
     const nameLength = name.length;
 
-    if (nameLength < MINIMUN_NAME || nameLength > MAXIMUM_NAME) {
-      return "닉네임은 1자 이상 20자 미만이어야 합니다.";
+    if (nameLength < NAME.MIN || nameLength > NAME.MAX) {
+      return false;
     }
   }
 
-  return "Not Error";
+  return true;
+}
+
+function getResult(crews) {
+  const cutNames = cutNamesIntoTwoLetters(crews);
+  const emailListOfDuplicatedCrews = getEmailOfDuplicatedCrews(
+    forms,
+    cutNames
+  );
+  const result = arrangeInAscendingOrder(emailListOfDuplicatedCrews);
+
+  return result;
 }
 
 function cutNamesIntoTwoLetters(crews) {
-  const theNumberOfCrews = crews.length;
+  const crewsCount = crews.length;
   const duplicatedNameIndexList = new Array(theNumberOfCrews).fill(0);
 
   for (
     let standardNameIndex = 0;
-    standardNameIndex < theNumberOfCrews;
+    standardNameIndex < crewsCount;
     standardNameIndex++
   ) {
     const standardName = crews[standardNameIndex][1];
@@ -152,33 +123,25 @@ function cutNamesIntoTwoLetters(crews) {
 }
 
 function getEmailOfDuplicatedCrews(crews, duplicatedCrewsList) {
-  const theNumberOfCrews = crews.length;
-  let emailList = new Array(theNumberOfCrews);
-  let emailIndex = 0;
+  const crewsCount = crews.length;
+  let emailList = [];
 
-  for (let crewIndex = 0; crewIndex < theNumberOfCrews; crewIndex++) {
-    const email = crews[crewIndex][0];
+  for (let i = 0; i < crewsCount; i++) {
+    const email = crews[i][0];
 
-    if (duplicatedCrewsList[crewIndex] > 0) {
-      emailList[emailIndex] = email;
-      emailIndex++;
+    if (duplicatedCrewsList[i] > 0 && email.trim() !== "") {
+      emailList.push(email)
     }
   }
-
-  emailList = emailList.filter(removeEmptyValue);
 
   return emailList;
 }
 
-function removeEmptyValue(email) {
-  return email !== null && email !== undefined && email !== "";
-}
-
 function arrangeInAscendingOrder(list) {
-  const theNumberOfEmail = list.length;
+  const emailCount = list.length;
 
   let comparedIndex, standardIndex, standard;
-  for (standardIndex = 1; standardIndex < theNumberOfEmail; standardIndex++) {
+  for (standardIndex = 1; standardIndex < emailCount; standardIndex++) {
     standard = list[standardIndex];
 
     for (
@@ -192,28 +155,20 @@ function arrangeInAscendingOrder(list) {
     list[comparedIndex + 1] = standard;
   }
 
-  const deduplicatedList = removeDuplicatedEmail(list);
-
-  return deduplicatedList;
+  return removeDuplicatedEmail(list);
 }
 
 function removeDuplicatedEmail(list) {
-  const theNumberOfEmail = list.length;
+  const emailCount = list.length;
+  const deduplicatedList = [];
 
-  for (
-    let emailListindex = 1;
-    emailListindex < theNumberOfEmail;
-    emailListindex++
-  ) {
-    if (list[emailListindex - 1] === list[emailListindex]) {
-      list[emailListindex - 1] = "";
-      list[emailListindex] = "";
+  for (let i = 0; i < emailCount; i++) {
+    if (list[i] !== list[i - 1]) {
+      deduplicatedList.push(list[i]);
     }
   }
 
-  list = list.filter(removeEmptyValue);
-
-  return list;
+  return deduplicatedList.filter((email) => email && email.trim() !== "");
 }
 
 module.exports = problem6;
